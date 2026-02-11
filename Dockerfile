@@ -1,31 +1,19 @@
-# ---------- STAGE 1: BUILD ----------
-FROM node:20-alpine AS builder
+FROM node:20-alpine
 
 WORKDIR /app
 
-# kopiujemy zależności
+# deps
 COPY package*.json ./
 RUN npm ci
 
-# kopiujemy resztę projektu
+# app
 COPY . .
 
-# build aplikacji Vite (tworzy dist/)
+# build
 RUN npm run build
 
+# vite preview domyślnie słucha na 4173
+EXPOSE 4173
 
-# ---------- STAGE 2: PRODUCTION SERVER ----------
-FROM nginx:alpine
-
-# usuwamy default config
-RUN rm -rf /usr/share/nginx/html/*
-
-# kopiujemy zbudowaną apkę
-COPY --from=builder /app/dist /usr/share/nginx/html
-
-# SPA routing fix (React Router etc.)
-COPY nginx.conf /etc/nginx/conf.d/default.conf
-
-EXPOSE 80
-
-CMD ["nginx", "-g", "daemon off;"]
+# ważne: --host 0.0.0.0 żeby było dostępne z zewnątrz kontenera
+CMD ["npm", "run", "preview", "--", "--host", "0.0.0.0", "--port", "4173"]
