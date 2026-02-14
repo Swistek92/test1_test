@@ -6,6 +6,6 @@ export default defineConfig({
   preview: {
     host: true,          // lub "0.0.0.0"
     port: 4173,
-    allowedHosts: ["prod.marketzooo.store", "test.marketzooo.store"],
+    allowedHosts: true
   },
 });
