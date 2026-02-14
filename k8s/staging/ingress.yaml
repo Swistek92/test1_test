@@ -1,0 +1,18 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: home-app-staging
+  namespace: staging
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: test.marketzooo.store
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: home-app
+                port:
+                  number: 80
